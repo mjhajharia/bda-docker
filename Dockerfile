@@ -10,7 +10,7 @@ ENV S6_VERSION=v2.1.0.2
 ENV RSTUDIO_VERSION=2022.12.0+353
 ENV DEFAULT_USER=rstudio
 ENV PANDOC_VERSION=default
-ENV QUARTO_VERSION=1.3.211
+# ENV QUARTO_VERSION=1.3.211
 
 RUN /rocker_scripts/install_rstudio.sh
 RUN /rocker_scripts/install_pandoc.sh
@@ -32,6 +32,8 @@ RUN install2.r knitr devtools magrittr rmarkdown rstan brms bayesplot rstanarm s
 # install tinytex
 RUN quarto install tinytex
 RUN pip install jupyter-cache
-
+RUN install2.r  markmyassignment remotes
+RUN install2.r MASS, bayesplot, brms, cmdstanr , dplyr, gganimate, ggdist, ggforce, ggplot2, grid, gridExtra, latex2exp, loo, plyr, posterior, purrr, rprojroot, tidyr
+RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
 EXPOSE 8787
 CMD ["/init"]
