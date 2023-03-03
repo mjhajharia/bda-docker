@@ -28,14 +28,31 @@ RUN apt-get update \
     liblapack-dev libopenblas-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install R packages
-RUN install2.r knitr devtools magrittr rmarkdown rstan brms bayesplot rstanarm shiny
-# install tinytex
-RUN quarto install tinytex
+#install jupyter cache for quarto
 RUN pip install jupyter-cache
-RUN install2.r  markmyassignment remotes
-RUN install2.r MASS, bayesplot, brms , dplyr, gganimate, ggdist, ggforce, ggplot2, grid, gridExtra, latex2exp, loo, plyr, posterior, purrr, rprojroot, tidyr
+
+# Install R packages
+RUN install2.r --error \
+    --deps TRUE \
+    --skipinstalled \
+    --repos 'http://cran.rstudio.com' \
+    --repos 'https://mc-stan.org/r-packages/' \
+    --repos 'https://cloud.r-project.org' \
+    --repos 'https://cran.rstudio.com' \
+    --repos 'https://r.oihoo.org' \
+    markmyassignment remotes knitr devtools magrittr \
+    dplyr latex2exp loo plyr rprojroot MASS rmarkdown\
+    tidyverse tidyr tidybayes \
+    gganimate ggdist ggforce ggplot2 grid gridExtra posterior purrr \
+    rstan brms bayesplot rstanarm shiny
+
 RUN Rscript -e "install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))"
 RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
+RUN Rscript -e "install.packages('tinytex'); tinytex::install_tinytex(force=TRUE)"
+
+# install tinytex
+RUN quarto install tinytex
+
+#start rstudio
 EXPOSE 8787
 CMD ["/init"]
