@@ -32,22 +32,21 @@ RUN apt-get update \
 RUN pip install jupyter-cache
 
 # Install R packages
-RUN install2.r --error \
-    --deps TRUE \
-    --skipinstalled \
+RUN install2.r --deps TRUE devtools  markmyassignment latex2exp  gganimate ggforce gridExtra
+RUN install2.r --deps TRUE tidyverse  tidybayes 
+
+RUN Rscript -e "install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))"
+
+RUN install2.r --deps TRUE \
     --repos 'http://cran.rstudio.com' \
     --repos 'https://mc-stan.org/r-packages/' \
     --repos 'https://cloud.r-project.org' \
     --repos 'https://cran.rstudio.com' \
-    --repos 'https://r.oihoo.org' \
-    markmyassignment remotes knitr devtools magrittr \
-    dplyr latex2exp loo plyr rprojroot MASS rmarkdown\
-    tidyverse tidyr tidybayes \
-    gganimate ggdist ggforce ggplot2 grid gridExtra posterior purrr \
-    rstan brms bayesplot rstanarm shiny
+    --repos 'https://cran.r-project.org' \
+    rstan brms bayesplot rstanarm shinystan
 
-RUN Rscript -e "install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))"
 RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
+
 RUN Rscript -e "install.packages('tinytex'); tinytex::install_tinytex(force=TRUE)"
 
 # install tinytex
