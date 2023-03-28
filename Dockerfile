@@ -18,6 +18,8 @@ RUN /rocker_scripts/install_quarto.sh
 RUN /rocker_scripts/install_tidyverse.sh
 RUN /rocker_scripts/install_jupyter.sh
 RUN /rocker_scripts/install_julia.sh
+RUN /rocker_scripts/install_texlive.sh
+
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -46,12 +48,11 @@ RUN install2.r --deps TRUE \
     rstan brms bayesplot rstanarm shinystan
 
 RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
+USER rstudio
+RUN quarto install tinytex --update-path
+RUN /home/rstudio/.TinyTeX/bin/x86_64-linux/tlmgr install tikzfill
 
-RUN Rscript -e "install.packages('tinytex'); tinytex::install_tinytex(force=TRUE)"
-
-# install tinytex
-RUN quarto install tinytex
-
+USER root
 #start rstudio
 EXPOSE 8787
 CMD ["/init"]
