@@ -6,8 +6,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - '**.Dockerfile'
-      - '**.yml'
+      - 'Dockerfile'
   pull_request:
     branches: [ "main" ]
     paths-ignore:

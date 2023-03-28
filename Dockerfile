@@ -53,6 +53,6 @@ RUN quarto install tinytex --update-path
 RUN /home/rstudio/.TinyTeX/bin/x86_64-linux/tlmgr install tikzfill
 
 USER root
-#start rstudio 
+#start rstudio  
 EXPOSE 8787
 CMD ["/init"]
