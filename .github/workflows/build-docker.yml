@@ -32,8 +32,7 @@ jobs:
     - uses: docker/build-push-action@v4
       with:
         platforms: linux/amd64, linux/arm64
-        file: revdeps.Dockerfile
+        file: Dockerfile
         push: true
-        tags: andrjohns/revdeps
         cache-from: type=gha
         cache-to: type=gha,mode=max
