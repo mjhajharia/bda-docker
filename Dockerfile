@@ -21,26 +21,30 @@ RUN /rocker_scripts/install_julia.sh
 RUN /rocker_scripts/install_texlive.sh
 
 
-RUN sudo apt-get update \
-    && sudo apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
     r-cran-curl \
     git \
     curl \
     gdebi-core \
     liblapack-dev libopenblas-dev \
+    build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev libxml2-dev libglpk-dev libnode-dev libv8-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN sudo apt-get update \
-    && sudo apt-get install -y --no-install-recommends  libglpk-dev
+RUN apt-get update && apt-get install -y build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev libxml2-dev libglpk-dev libnode-dev libv8-dev
+
+RUN install2.r --deps TRUE devtools  markmyassignment latex2exp  gganimate ggforce gridExtra
+RUN install2.r --deps TRUE tidyverse  tidybayes igraph
+RUN install2.r --error data.table curl h2o bayesplot tidyverse pander logger comorbidity neatRanges plumber igraph
+RUN R -e 'remotes::install_github("stan-dev/cmdstanr", upgrade = "always")'
+RUN R -e 'remotes::install_github("paul-buerkner/brms", upgrade = "always")'
+RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
+RUN Rscript -e "library(cmdstanr); install_cmdstan()"
 
 #install jupyter cache for quarto
 RUN pip install jupyter-cache
 
 # Install R packages
-RUN install2.r --deps TRUE devtools  markmyassignment latex2exp  gganimate ggforce gridExtra
-RUN install2.r --deps TRUE tidyverse  tidybayes 
-
-
 RUN install2.r --deps TRUE \
     --repos 'http://cran.rstudio.com' \
     --repos 'https://mc-stan.org/r-packages/' \
@@ -49,9 +53,7 @@ RUN install2.r --deps TRUE \
     --repos 'https://cran.r-project.org' \
     rstan brms bayesplot rstanarm shinystan
 
-RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
-RUN Rscript -e "remotes::install_github('stan-dev/cmdstanr')"
-RUN Rscript -e "library(cmdstanr); install_cmdstan()"
+
 
 USER rstudio
 RUN quarto install tinytex --update-path
