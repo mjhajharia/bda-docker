@@ -21,14 +21,17 @@ RUN /rocker_scripts/install_julia.sh
 RUN /rocker_scripts/install_texlive.sh
 
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN sudo apt-get update \
+    && sudo apt-get install -y --no-install-recommends \
     r-cran-curl \
     git \
     curl \
     gdebi-core \
     liblapack-dev libopenblas-dev \
     && rm -rf /var/lib/apt/lists/*
+
+RUN sudo apt-get update \
+    && sudo apt-get install -y --no-install-recommends  libglpk-dev
 
 #install jupyter cache for quarto
 RUN pip install jupyter-cache
@@ -37,7 +40,6 @@ RUN pip install jupyter-cache
 RUN install2.r --deps TRUE devtools  markmyassignment latex2exp  gganimate ggforce gridExtra
 RUN install2.r --deps TRUE tidyverse  tidybayes 
 
-RUN Rscript -e "install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))"
 
 RUN install2.r --deps TRUE \
     --repos 'http://cran.rstudio.com' \
@@ -48,6 +50,9 @@ RUN install2.r --deps TRUE \
     rstan brms bayesplot rstanarm shinystan
 
 RUN Rscript -e "remotes::install_github('avehtari/BDA_course_Aalto', subdir = 'rpackage', upgrade='never')"
+RUN Rscript -e "remotes::install_github('stan-dev/cmdstanr')"
+RUN Rscript -e "library(cmdstanr); install_cmdstan()"
+
 USER rstudio
 RUN quarto install tinytex --update-path
 RUN /home/rstudio/.TinyTeX/bin/x86_64-linux/tlmgr install tikzfill
