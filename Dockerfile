@@ -58,7 +58,7 @@ RUN install2.r --deps TRUE \
 USER rstudio
 RUN quarto install tinytex --update-path
 RUN /home/rstudio/.TinyTeX/bin/x86_64-linux/tlmgr install tikzfill
-
+RUN Rscript -e "cmdstanr::install_cmdstan()"
 USER root
 #start rstudio  
 EXPOSE 8787
